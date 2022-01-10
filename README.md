@@ -17,4 +17,7 @@ curl --socks5 localhost:9981 https://www.baidu.com/
 ```
 https://support.mozilla.org/en-US/kb/connection-settings-firefox
 ```
+# 计划
+实现身份验证
+实现ipv6
 
