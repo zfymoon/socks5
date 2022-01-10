@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/curie/Studio/socks5/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I/home/curie/Studio/socks5/libs/asio/include   -std=c++11 -DASIO_STANDALONE -pthread -g   -std=gnu++2a -o CMakeFiles/socks5.dir/main.cpp.o -c /home/curie/Studio/socks5/main.cpp",
+  "file": "/home/curie/Studio/socks5/main.cpp"
+}
+]

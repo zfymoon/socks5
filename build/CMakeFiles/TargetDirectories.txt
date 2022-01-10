@@ -1,0 +1,3 @@
+/home/curie/Studio/socks5/build/CMakeFiles/rebuild_cache.dir
+/home/curie/Studio/socks5/build/CMakeFiles/edit_cache.dir
+/home/curie/Studio/socks5/build/CMakeFiles/socks5.dir
