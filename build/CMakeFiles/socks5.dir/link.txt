@@ -1,0 +1,1 @@
+/bin/x86_64-linux-gnu-g++-9   -std=c++11 -DASIO_STANDALONE -pthread -g   CMakeFiles/socks5.dir/main.cpp.o  -o socks5 
