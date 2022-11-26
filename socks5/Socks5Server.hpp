@@ -11,6 +11,7 @@
 #include "Socks5SessionV2.hpp"
 #include "atomic"
 #include "memory"
+#include "./config/Config.hpp"
 #include <unordered_map>
 
 using asio::ip::tcp;
@@ -25,6 +26,7 @@ class Socks5Server: public enable_shared_from_this<Socks5Server>{
 private:
     const string TAG = "Socks5Server";
     int _sessionID;
+    shared_ptr<Config> _config;
     io_context _context;
     tcp::acceptor _acceptor;
     unordered_map<int,weak_ptr<Socks5SessionV2>> _session_map;
@@ -41,7 +43,7 @@ private:
                     } else{
                         try {
                             int id = self->_sessionID++;
-                            auto sessionInstance = make_shared<Socks5SessionV2>(clientSocket,id);
+                            auto sessionInstance = make_shared<Socks5SessionV2>(clientSocket,id,self->_config);
                             self->_session_map[id] = sessionInstance;
                             asio::post(self->_taskPool, [ sessionInstance ](){
                                 sessionInstance->start();
@@ -54,16 +56,17 @@ private:
                 });
     }
 public:
-    explicit Socks5Server(int port):
+    explicit Socks5Server(const string &configFile):
             _sessionID(0),
+            _config(make_shared<Config>(configFile)),
             _context(),
             _acceptor(
                     _context,
-                    tcp::endpoint(tcp::v4(),port)),
-            _taskPool(5)
-                    {}
+                    tcp::endpoint(tcp::v4(),_config->port)),
+            _taskPool(5){}
+
     void run(){
-        Log::info(TAG,"Server running at {}:{} ",
+        Log::info("Server running at {}:{} ",TAG,
                   _acceptor.local_endpoint().address().to_string(),
                   _acceptor.local_endpoint().port());
         start();

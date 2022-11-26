@@ -5,7 +5,7 @@
 int main() {
     Log::init();
     std::cout<<FileUtil::readContent("")<<endl;
-    std::shared_ptr<Socks5Server> socks5Server = make_shared<Socks5Server>(9983);
+    std::shared_ptr<Socks5Server> socks5Server = make_shared<Socks5Server>("../config.json");
     socks5Server->run();
     return 0;
 }

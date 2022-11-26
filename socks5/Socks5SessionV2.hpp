@@ -4,12 +4,15 @@
 
 #ifndef SOCKS5_SOCKS5SESSIONV2_HPP
 #define SOCKS5_SOCKS5SESSIONV2_HPP
+#include <utility>
+
 #include "IDataHandler.hpp"
 #include "asio.hpp"
 #include "memory"
 #include "Socks5State.hpp"
 #include "SocksAddr.h"
 #include "SocketClient.hpp"
+#include "./config/Config.hpp"
 
 using std::shared_ptr;
 using asio::ip::tcp;
@@ -19,8 +22,8 @@ using std::string;
 
 class Socks5SessionV2 : public IDataHandler {
 public:
-    Socks5SessionV2(shared_ptr<tcp::socket> socket,int sessionID)
-            : IDataHandler(std::move(socket)),_state(State::INITED),_sessionID(sessionID) {
+    Socks5SessionV2(shared_ptr<tcp::socket> socket,int sessionID,shared_ptr<Config> config)
+            : IDataHandler(std::move(socket)),_state(State::INITED),_sessionID(sessionID),_config(std::move(config)) {
         Socks5SessionV2::TAG += std::to_string(sessionID);
     }
 
@@ -43,6 +46,7 @@ public:
 private:
     string TAG = "Socks5SessionV2";
     int _sessionID;
+    shared_ptr<Config> _config;
     char _currentMethod;
     State _state;
     shared_ptr<SocksAddr> _addr;
@@ -238,12 +242,21 @@ private:
         serverToClient();
     }
     char getMethod(char * data, int methodNum){
-        _currentMethod = Socks5::Method::NO_AUTH;
+        if(_config->auth){
+            _currentMethod = Socks5::Method::PASSWD;
+        } else{
+            _currentMethod = Socks5::Method::NO_AUTH;
+        }
         return _currentMethod;
     }
     bool onAuth(const string &userName,const string &password){
-        Log::info("Socks5","name {} password {}",userName,password);
-        return true;
+        auto user = _config->getUser(userName);
+        if(user.has_value()){
+            auto info = *user;
+            return password == info.token;
+        } else{
+            return false;
+        }
     }
     void setState(State state){
         _state = state;
