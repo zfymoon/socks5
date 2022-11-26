@@ -44,13 +44,11 @@ public:
                 }
                 if( configJsonObj.contains("user")){
                     for( auto & item: configJsonObj["user"]){
-                        if(item.contains("name") && item.contains("token")){
-                            User user {item["name"].get<string>(),item["token"].get<string>()};
-                            if(user.token.length() >= USER_TOKEN_MIN){
-                                userMap.emplace(item["name"].get<string>(),user);
-                            }else {
-                                Log::error(TAG,"User[{}] token is less than {}. Please modify.", user.name, USER_TOKEN_MIN);
-                            }
+                        User user {item["name"].get<string>(),item["token"].get<string>()};
+                        if(user.token.length() >= USER_TOKEN_MIN){
+                            userMap.emplace(item["name"].get<string>(),user);
+                        }else {
+                            Log::error(TAG,"User[{}] token is less than {}. Please modify.", user.name, USER_TOKEN_MIN);
                         }
                     }
                 }
