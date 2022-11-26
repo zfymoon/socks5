@@ -28,6 +28,10 @@ public:
                 : _addr(std::move(addr)),
                   _socket(std::move(socket)),_resolver(_socket->get_executor()),_buffer(new char[CLIENT_BUFFER_SIZE]){}
     void connect(const ConnectResult& result){
+        Log::error(TAG,
+                   "Start connect to {}:{} ",
+                   _addr->getAddrName(),
+                   std::to_string(_addr->getPort()));
         _resolver.async_resolve(
                 tcp::resolver::query(  _addr->getAddrName(), std::to_string(_addr->getPort())),
                 [self = shared_from_this(),result](asio::error_code code, const tcp::resolver::iterator &it){
@@ -36,7 +40,10 @@ public:
                             if(!code){
                                 result(true,self->_socket->remote_endpoint());
                             } else{
-                                Log::error(self->TAG,"Connect failed {}:{} ",(*it).endpoint().address().to_string(),(*it).endpoint().port());
+                                Log::error(self->TAG,
+                                           "Connect failed {}:{} ",
+                                           (*it).endpoint().address().to_string(),
+                                           (*it).endpoint().port());
                                 result(false, tcp::endpoint());
                             }
                         });
