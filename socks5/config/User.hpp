@@ -10,7 +10,7 @@
 #include "string"
 
 using std::string;
-
+const int USER_TOKEN_MIN = 10;
 class User {
 public:
     string name;

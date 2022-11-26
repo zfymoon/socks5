@@ -11,6 +11,7 @@
 #include "./User.hpp"
 #include "../../common/FileUtil.hpp"
 #include "../../libs/json/nlohmann/json.hpp"
+#include "../../common/Log.hpp"
 using std::unordered_map;
 using std::string;
 using std::optional;
@@ -18,6 +19,7 @@ using nlohmann::json;
 
 class Config {
 public:
+    const string TAG = "Config";
     int port {};
     bool auth {};
     int serverBufferSize {};
@@ -44,7 +46,11 @@ public:
                     for( auto & item: configJsonObj["user"]){
                         if(item.contains("name") && item.contains("token")){
                             User user {item["name"].get<string>(),item["token"].get<string>()};
-                            userMap.emplace(item["name"].get<string>(),user);
+                            if(user.token.length() >= USER_TOKEN_MIN){
+                                userMap.emplace(item["name"].get<string>(),user);
+                            }else {
+                                Log::error(TAG,"User[{}] token is less than {}. Please modify.", user.name, USER_TOKEN_MIN);
+                            }
                         }
                     }
                 }

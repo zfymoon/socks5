@@ -63,10 +63,12 @@ public:
             _acceptor(
                     _context,
                     tcp::endpoint(tcp::v4(),_config->port)),
-            _taskPool(5){}
+            _taskPool(5){
+
+    }
 
     void run(){
-        Log::info("Server running at {}:{} ",TAG,
+        Log::info(TAG, "Server running at {}:{} ",
                   _acceptor.local_endpoint().address().to_string(),
                   _acceptor.local_endpoint().port());
         start();

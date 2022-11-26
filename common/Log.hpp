@@ -7,6 +7,7 @@
 #include "string"
 #include "../libs/spdlog/include/spdlog/spdlog-inl.h"
 using std::string;
+bool LOG_INITED = false;
 class Log {
 public:
     enum Level{
@@ -15,8 +16,11 @@ public:
         ERROR = 2
     };
     static void init(){
-        spdlog::set_pattern("[%Y-%m-%d %H:%M:%S] [%^%L%$] [%t] %v");
-        spdlog::set_level(spdlog::level::level_enum::debug);
+        if(!LOG_INITED) {
+            spdlog::set_pattern("[%Y-%m-%d %H:%M:%S] [%^%L%$] [%t] %v");
+            spdlog::set_level(spdlog::level::level_enum::debug);
+            LOG_INITED = true;
+        }
     };
     template<typename ...T>
     static void debug(const std::string & tag,const std::string & message ,T...subMessage){
