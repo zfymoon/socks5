@@ -44,11 +44,13 @@ public:
                 }
                 if( configJsonObj.contains("user")){
                     for( auto & item: configJsonObj["user"]){
-                        User user {item["name"].get<string>(),item["token"].get<string>()};
-                        if(user.token.length() >= USER_TOKEN_MIN){
-                            userMap.emplace(item["name"].get<string>(),user);
-                        }else {
-                            Log::error(TAG,"User[{}] token is less than {}. Please modify.", user.name, USER_TOKEN_MIN);
+                        if(item.contains("name") ){
+                            User user {item["name"].get<string>(),item["token"].get<string>()};
+                            if(user.token.length() >= USER_TOKEN_MIN){
+                                userMap.emplace(item["name"].get<string>(),user);
+                            }else {
+                                Log::error(TAG,"User[{}] token is less than {}. Please modify.", user.name, USER_TOKEN_MIN);
+                            }
                         }
                     }
                 }
@@ -56,7 +58,7 @@ public:
         }
     }
     optional<User> getUser(const string & name){
-        if(!name.empty() && userMap.contains(name)){
+        if(!name.empty()){
             return userMap.at(name);
         } else{
             return std::nullopt;
