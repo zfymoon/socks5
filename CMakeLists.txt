@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 project(socks5)
 
 set(CMAKE_CXX_STANDARD 20)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DASIO_STANDALONE -pthread")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -DASIO_STANDALONE -pthread")
 aux_source_directory(. SRC_LIST)
 include_directories(libs/asio/include)
 include_directories(libs/spdlog/include)
