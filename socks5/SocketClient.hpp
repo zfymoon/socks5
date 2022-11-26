@@ -36,7 +36,7 @@ public:
                             if(!code){
                                 result(true,self->_socket->remote_endpoint());
                             } else{
-                                Log::error(self->TAG,"Connect failed {} ",(*it).endpoint().address().to_string());
+                                Log::error(self->TAG,"Connect failed {}:{} ",(*it).endpoint().address().to_string(),(*it).endpoint().port());
                                 result(false, tcp::endpoint());
                             }
                         });
