@@ -32,11 +32,11 @@ public:
                 tcp::resolver::query(  _addr->getAddrName(), std::to_string(_addr->getPort())),
                 [self = shared_from_this(),result](asio::error_code code, const tcp::resolver::iterator &it){
                     if(!code){
-                        self->_socket->async_connect(*it, [ self, result](asio::error_code code){
+                        self->_socket->async_connect(*it, [ it,self, result](asio::error_code code){
                             if(!code){
                                 result(true,self->_socket->remote_endpoint());
                             } else{
-                                Log::error(self->TAG,"Connect failed {} ");
+                                Log::error(self->TAG,"Connect failed {} ",(*it).endpoint().address().to_string());
                                 result(false, tcp::endpoint());
                             }
                         });
