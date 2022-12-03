@@ -105,7 +105,6 @@ protected:
     }
     virtual bool onAuth(const string &userName,const string &password){
         auto user = _config->getUser(userName);
-        Log::debug(TAG,"onAuth {} {}",userName,password);
         if(user.has_value() && password.length() >= USER_TOKEN_MIN){
             auto info = *user;
             return password == info.token;
