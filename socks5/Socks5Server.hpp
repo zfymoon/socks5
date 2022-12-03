@@ -9,6 +9,7 @@
 #include "asio.hpp"
 #include "../common/Log.hpp"
 #include "Socks5SessionV2.hpp"
+#include "forward/ForwardSession.hpp"
 #include "atomic"
 #include "memory"
 #include "./config/Config.hpp"
@@ -43,11 +44,20 @@ private:
                     } else{
                         try {
                             int id = self->_sessionID++;
-                            auto sessionInstance = make_shared<Socks5SessionV2>(clientSocket,id,self->_config);
-                            self->_session_map[id] = sessionInstance;
-                            asio::post(self->_taskPool, [ sessionInstance ](){
-                                sessionInstance->start();
-                            });
+                            if(self->_config->forwardEnable) {
+                                auto sessionInstance = make_shared<ForwardSession>(clientSocket, id, self->_config);
+                                self->_session_map[id] = sessionInstance;
+                                asio::post(self->_taskPool, [ sessionInstance ](){
+                                    sessionInstance->start();
+                                });
+                            }else{
+                                auto sessionInstance = make_shared<Socks5SessionV2>(clientSocket, id, self->_config);
+                                self->_session_map[id] = sessionInstance;
+                                asio::post(self->_taskPool, [ sessionInstance ](){
+                                    sessionInstance->start();
+                                });
+                            }
+
                         }catch (exception &e){
                             Log::error( self->TAG,"[start] error "+string(e.what()));
                         }
@@ -68,7 +78,12 @@ public:
     }
 
     void run(){
-        Log::info(TAG, "Server running at {}:{} ",
+        string serverType = "Socks5";
+        if(_config->forwardEnable){
+            serverType = "Forward";
+        }
+        Log::info(TAG, "{} Server running at {}:{} ",
+                  serverType,
                   _acceptor.local_endpoint().address().to_string(),
                   _acceptor.local_endpoint().port());
         start();

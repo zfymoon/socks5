@@ -9,7 +9,15 @@ include_directories(libs/spdlog/include)
 
 add_executable(socks5 main.cpp
         socks5/Socks5Server.hpp common/Log.hpp common/FileUtil.hpp
-        socks5/IDataHandler.hpp socks5/Socks5SessionV2.hpp
+        socks5/DataHandler.hpp socks5/Socks5SessionV2.hpp
         util/NetUtil.hpp
         socks5/SocksAddr.h
-        socks5/Socks5State.hpp socks5/SocketClient.hpp socks5/config/Config.hpp socks5/config/User.hpp)
+        socks5/Socks5State.hpp
+        socks5/client/SocketClient.hpp
+        socks5/config/Config.hpp
+        socks5/config/User.hpp
+        socks5/stream/Counter.hpp
+        socks5/forward/ForwardServer.hpp
+        socks5/forward/ForwardSession.hpp
+        socks5/config/Server.hpp
+        socks5/forward/Socks5Client.hpp)

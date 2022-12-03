@@ -12,6 +12,7 @@
 #include "../../common/FileUtil.hpp"
 #include "../../libs/json/nlohmann/json.hpp"
 #include "../../common/Log.hpp"
+#include "./Server.hpp"
 using std::unordered_map;
 using std::string;
 using std::optional;
@@ -24,7 +25,9 @@ public:
     bool auth {};
     int serverBufferSize {};
     int clientBufferSize {};
+    Server forwardServer {};
     unordered_map<string,User> userMap;
+    bool forwardEnable {};
     explicit Config(const string & configPath){
         string configContent = FileUtil::readContent(configPath);
         if(!configContent.empty()){
@@ -48,6 +51,29 @@ public:
                             User user {item["name"].get<string>(),item["token"].get<string>()};
                             if(user.token.length() >= USER_TOKEN_MIN){
                                 userMap.emplace(item["name"].get<string>(),user);
+                            }else {
+                                Log::error(TAG,"User[{}] token is less than {}. Please modify.", user.name, USER_TOKEN_MIN);
+                            }
+                        }
+                    }
+                }
+                //forward server
+                if( configJsonObj.contains("forward")){
+                    auto forwardConfig = configJsonObj["forward"].get<json>();
+                    if( forwardConfig["enable"].is_boolean()){
+                        forwardEnable = forwardConfig["enable"].get<bool>();
+                    }
+                    if( forwardConfig["host"].is_string()){
+                        forwardServer.server = forwardConfig["host"].get<string>();
+                    }
+                    if( forwardConfig["port"].is_number_integer()){
+                        forwardServer.port = forwardConfig["port"].get<int>();
+                    }
+                    if( forwardConfig.contains("user")){
+                        if(forwardConfig["user"]["name"].is_string() ){
+                            User user {forwardConfig["user"]["name"].get<string>(),forwardConfig["user"]["token"].get<string>()};
+                            if(user.token.length() >= USER_TOKEN_MIN){
+                                forwardServer.user = user;
                             }else {
                                 Log::error(TAG,"User[{}] token is less than {}. Please modify.", user.name, USER_TOKEN_MIN);
                             }
