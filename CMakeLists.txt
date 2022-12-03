@@ -16,7 +16,6 @@ add_executable(socks5 main.cpp
         socks5/client/SocketClient.hpp
         socks5/config/Config.hpp
         socks5/config/User.hpp
-        socks5/stream/Counter.hpp
         socks5/forward/ForwardServer.hpp
         socks5/forward/ForwardSession.hpp
         socks5/config/Server.hpp
