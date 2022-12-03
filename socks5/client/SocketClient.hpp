@@ -37,10 +37,6 @@ public:
                   _port(port),
                   DataHandler(std::move(socket)){}
     void connect(const ConnectResult& result){
-        Log::info(TAG,
-                   "Start connect to {}:{} ",
-                   _serverName,
-                   std::to_string(_port));
         auto currentTime = std::chrono::system_clock::now();
         _resolver.async_resolve(
                 tcp::resolver::query( _serverName, std::to_string(_port)),
