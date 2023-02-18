@@ -30,6 +30,7 @@ namespace FileUtil {
                     result += (tmp + "\n");
                 }
                 result.pop_back();
+                inputStream.close();
                 return result;
             } else{
                 Log::error(TAG,"Open failed: {}",fileName);
