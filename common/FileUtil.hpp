@@ -9,11 +9,12 @@
 #include "fstream"
 #include "Log.hpp"
 using std::string;
+using std::string_view;
 using std::ifstream;
 
 namespace FileUtil {
 
-    const string TAG = "FileUtil";
+    const string_view TAG = "FileUtil";
 
     string readContent(const string & fileName){
         if(fileName.empty()){
